@@ -1,0 +1,11 @@
+{
+  "cSpell.words": [
+    "boto",
+    "imwrite",
+    "landmarker",
+    "mediapipe",
+    "pthread",
+    "venv"
+  ],
+  "pylint.args": ["--generated-members=cv2.*"]
+}

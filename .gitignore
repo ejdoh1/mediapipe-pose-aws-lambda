@@ -1,0 +1,5 @@
+venv
+.my**
+deploy.sh
+.serverless
+pose_landmarker.task

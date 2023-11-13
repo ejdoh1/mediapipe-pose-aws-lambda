@@ -1,0 +1,47 @@
+service: mediapipe
+
+frameworkVersion: "3"
+
+provider:
+  name: aws
+  stage: ${opt:stage, 'dev'}
+  region: ap-southeast-2
+  timeout: 30
+  environment:
+    S3_BUCKET: ${self:service}-${self:provider.stage}
+
+  ecr:
+    images:
+      appimage:
+        path: ./
+
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - "s3:*"
+      Resource: "*"
+
+package:
+  exclude:
+    - node_modules/**
+    - venv/**
+
+functions:
+  execute:
+    architecture: arm64
+    memorySize: 5192 # todo: check this
+    image:
+      name: appimage
+    environment:
+      LD_PRELOAD: /opt/pthread_shim.so
+    events:
+      - http:
+          path: execute
+          method: get
+
+resources:
+  Resources:
+    MyBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: ${self:provider.environment.S3_BUCKET}
