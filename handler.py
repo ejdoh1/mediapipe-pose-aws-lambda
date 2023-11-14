@@ -18,7 +18,7 @@ PoseLandmarker = mp.tasks.vision.PoseLandmarker
 PoseLandmarkerOptions = mp.tasks.vision.PoseLandmarkerOptions
 VisionRunningMode = mp.tasks.vision.RunningMode
 options = PoseLandmarkerOptions(
-    base_options=BaseOptions(model_asset_path="pose_landmarker.task"),
+    base_options=BaseOptions(model_asset_path="pose_landmarker_lite.task"),
     running_mode=VisionRunningMode.IMAGE,
 )
 landmarker = PoseLandmarker.create_from_options(options)
@@ -60,16 +60,30 @@ def handler(_event, _context):
     For demo the image is fixed to image.jpg.
     """
 
-    mp_image = mp.Image.create_from_file("img.jpg")
+    mp_image = mp.Image.create_from_file("image.jpg")
 
+    # start timer
+    timer = cv2.getTickCount()
     pose_landmarker_result = landmarker.detect(mp_image)
+    # stop timer
+    time_in_ms = (cv2.getTickCount() - timer) / cv2.getTickFrequency() * 1000
+    print("Time taken to run pose landmark detection: %.3f ms" % time_in_ms)
 
     print(pose_landmarker_result)
 
     # Draw pose landmarks on the image.
+    # start timer
+    timer = cv2.getTickCount()
     annotated_image = draw_landmarks_on_image(
         mp_image.numpy_view(), pose_landmarker_result
     )
+    # stop timer
+    time_in_ms = (cv2.getTickCount() - timer) / cv2.getTickFrequency() * 1000
+
+    print("Time taken to draw pose landmarks: %.3f ms" % time_in_ms)
+
+    # start timer
+    timer = cv2.getTickCount()
 
     filename = str(uuid.uuid4()) + ".png"
     filepath = "/tmp/" + filename
@@ -85,6 +99,10 @@ def handler(_event, _context):
         Params={"Bucket": s3_bucket, "Key": filename},
         ExpiresIn=3600,
     )
+    # stop timer
+    time_in_ms = (cv2.getTickCount() - timer) / cv2.getTickFrequency() * 1000
+
+    print("Time taken to upload to s3: %.3f ms" % time_in_ms)
 
     return {
         "statusCode": 200,

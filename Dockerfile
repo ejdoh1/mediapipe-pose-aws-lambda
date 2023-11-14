@@ -4,7 +4,7 @@ RUN apt-get update && apt-get install ffmpeg libsm6 libxext6 build-essential -y
 
 COPY handler.py ./
 COPY requirements.txt ./
-COPY pose_landmarker.task ./
+COPY pose_landmarker_lite.task ./
 COPY image.jpg ./
 COPY Makefile ./
 COPY pthread_shim.c ./

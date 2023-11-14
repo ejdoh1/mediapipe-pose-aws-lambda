@@ -8,6 +8,8 @@ Returns a presigned URL to the image on S3 with the pose estimation drawn on it.
 # Download the .task file
 wget -O pose_landmarker.task -q https://storage.googleapis.com/mediapipe-models/pose_landmarker/pose_landmarker_heavy/float16/1/pose_landmarker_heavy.task
 
+# https://storage.googleapis.com/mediapipe-models/pose_landmarker/pose_landmarker_lite/float16/latest/pose_landmarker_lite.task
+
 # Deploy to AWS
 sls deploy
 
